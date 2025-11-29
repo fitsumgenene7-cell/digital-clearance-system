@@ -12,7 +12,7 @@ public class DB {
 
     public static Connection getConnection() throws SQLException {
         try {
-            Class.forName("org.sqlite.JDBC"); // explicit driver load
+            Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -25,42 +25,41 @@ public class DB {
 
     public static void initializeDatabase() {
         try (Connection conn = getConnection(); Statement stmt = conn.createStatement()) {
-            // users table
+
+            // Students table
             stmt.execute("""
-                CREATE TABLE IF NOT EXISTS users (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    student_id TEXT UNIQUE,
-                    full_name TEXT,
-                    username TEXT,
-                    password TEXT,
-                    role TEXT,
-                    office TEXT
+                CREATE TABLE IF NOT EXISTS students (
+                    id TEXT PRIMARY KEY,
+                    full_name TEXT NOT NULL,
+                    password TEXT NOT NULL
                 );
             """);
 
-            // offices table
+            // Offices table
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS offices (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT UNIQUE
+                    office_name TEXT PRIMARY KEY,
+                    role TEXT NOT NULL,
+                    password TEXT NOT NULL
                 );
             """);
 
-            // penalties table
+
+            // Penalties table
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS penalties (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    student_id TEXT,
-                    office TEXT,
+                    student_id TEXT NOT NULL,
+                    office_id INTEGER NOT NULL,
                     status TEXT,
                     reason TEXT,
-                    admin_id INTEGER,
-                    FOREIGN KEY(student_id) REFERENCES users(student_id),
-                    FOREIGN KEY(admin_id) REFERENCES users(id)
+                    FOREIGN KEY(student_id) REFERENCES students(id),
+                    FOREIGN KEY(office_id) REFERENCES offices(id)
                 );
             """);
 
             System.out.println("Database initialized successfully!");
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
