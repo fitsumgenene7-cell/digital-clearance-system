@@ -50,8 +50,9 @@ public class DB {
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     student_id TEXT NOT NULL,
                     office_name TEXT NOT NULL,
-                    status TEXT,
+                    status TEXT NOT NULL,
                     reason TEXT,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY(student_id) REFERENCES students(id),
                     FOREIGN KEY(office_name) REFERENCES offices(office_name)
                 );

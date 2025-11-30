@@ -36,14 +36,32 @@ public class OfficeLoginController {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                showAlert("Success", "Office login successful!\nWelcome " +
-                        rs.getString("office_name") + " (" + rs.getString("role") + ")");
-                // Here you can load the office dashboard
+                // Login successful - redirect to office dashboard
+                redirectToOfficeDashboard(officeName);
             } else {
                 showAlert("Error", "Invalid office name or password");
             }
         } catch (Exception e) {
             showAlert("Error", "Database error: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void redirectToOfficeDashboard(String officeName) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/office-dashboard.fxml"));
+            Parent root = loader.load();
+
+            // Pass office information to dashboard controller
+            OfficeDashboardController controller = loader.getController();
+            controller.initializeOffice(officeName);
+
+            Stage stage = (Stage) officeNameField.getScene().getWindow();
+            stage.setScene(new Scene(root, 600, 500));
+            stage.setTitle(officeName + " Dashboard - Digital Clearance");
+
+        } catch (Exception e) {
+            showAlert("Error", "Error loading dashboard: " + e.getMessage());
             e.printStackTrace();
         }
     }

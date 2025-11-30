@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.OfficeDashboardController"
+      spacing="20"
+      style="-fx-padding: 20;">
+
+    <!-- Header -->
+    <HBox spacing="20" alignment="CENTER_LEFT">
+        <Label fx:id="officeTitle" text="Office Dashboard"
+               style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Logout" onAction="#handleLogout"
+                style="-fx-background-color: #e74c3c; -fx-text-fill: white;"/>
+    </HBox>
+
+    <!-- Office Information -->
+    <VBox spacing="10" style="-fx-background-color: #f0f0f0; -fx-padding: 15; -fx-background-radius: 5;">
+        <Label fx:id="welcomeLabel" text="Welcome!" style="-fx-font-weight: bold;"/>
+        <Label text="Office Functions:"/>
+        <Label text="• Search students by ID • View clearance status • Manage penalties"/>
+    </VBox>
+
+    <!-- Search Section -->
+    <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 5;">
+        <Label text="Search Student" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+        <HBox spacing="10">
+            <TextField fx:id="searchField" promptText="Enter Student ID" prefWidth="200"/>
+            <Button text="Search" onAction="#handleSearch"
+                    style="-fx-background-color: #3498db; -fx-text-fill: white;"/>
+        </HBox>
+    </VBox>
+
+    <!-- Student Information -->
+    <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 5;">
+        <Label text="Student Information" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+        <Label fx:id="studentInfoLabel" text="No student selected"
+               style="-fx-background-color: #f8f9fa; -fx-padding: 10; -fx-border-color: #ddd;"/>
+    </VBox>
+
+    <!-- Action Buttons -->
+    <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 5;">
+        <Label text="Office Actions" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+        <HBox spacing="10">
+            <Button text="Issue Warning" onAction="#handleIssueWarning"
+                    style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-pref-width: 120;"/>
+            <Button text="Approve Student" onAction="#handleApproveStudent"
+                    style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-pref-width: 120;"/>
+            <Button text="Clear Warning" onAction="#handleClearWarning"
+                    style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-pref-width: 120;"/>
+            <!-- Dormitory-specific button -->
+            <Button fx:id="denyButton" text="Deny Clearance" onAction="#handleDenyClearance"
+                    style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-pref-width: 120;"/>
+        </HBox>
+
+        <!-- Warning Reason Input -->
+        <VBox fx:id="reasonSection" spacing="5" visible="false">
+            <Label text="Reason for Warning:" style="-fx-font-weight: bold;"/>
+            <TextArea fx:id="reasonTextArea" promptText="Enter reason for warning..."
+                      prefRowCount="3" prefWidth="300"/>
+            <Button text="Submit Warning" onAction="#handleSubmitWarning"
+                    style="-fx-background-color: #e67e22; -fx-text-fill: white; -fx-pref-width: 120;"/>
+        </VBox>
+    </VBox>
+
+</VBox>
