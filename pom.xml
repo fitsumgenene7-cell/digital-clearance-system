@@ -38,7 +38,6 @@
 
     <build>
         <plugins>
-            <!-- Compiler plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -48,19 +47,13 @@
                 </configuration>
             </plugin>
 
-            <!-- Exec plugin to run JavaFX -->
+            <!-- Exec plugin as alternative -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <mainClass>com.example.clearance.Main</mainClass>
-                    <arguments>
-                        <argument>--module-path</argument>
-                        <argument>/Users/genenefitsum/Downloads/javafx-sdk-20.0.1/lib</argument>
-                        <argument>--add-modules</argument>
-                        <argument>javafx.controls,javafx.fxml</argument>
-                    </arguments>
+                    <mainClass>org.example.App</mainClass>
                 </configuration>
             </plugin>
         </plugins>

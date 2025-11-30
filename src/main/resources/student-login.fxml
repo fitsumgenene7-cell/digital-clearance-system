@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.StudentLoginController"
+      style="-fx-padding: 30; -fx-background-color: #f5f5f5;">
+
+    <Label text="Student Login">
+        <font>
+            <Font name="System Bold" size="24.0" />
+        </font>
+    </Label>
+
+    <VBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;">
+        <Label text="Student ID" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="studentIdField" promptText="Enter your student ID" prefWidth="250"/>
+
+        <Label text="Password" style="-fx-font-weight: bold;"/>
+        <PasswordField fx:id="passwordField" promptText="Enter your password" prefWidth="250"/>
+
+        <Button text="Login as Student" onAction="#handleStudentLogin" prefWidth="250"
+                style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10;"/>
+
+        <Label text="Not a student?" style="-fx-text-fill: #7f8c8d; -fx-padding: 10 0 0 0;"/>
+        <Button text="Go to Office Login" onAction="#switchToOfficeLogin" prefWidth="250"
+                style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-padding: 8;"/>
+    </VBox>
+</VBox>
