@@ -36,14 +36,35 @@ public class StudentLoginController {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                showAlert("Success", "Student login successful!\nWelcome " +
-                        rs.getString("first_name") + " " + rs.getString("last_name"));
-                // Here you can load the student dashboard
+                String studentName = rs.getString("first_name") + " " + rs.getString("last_name");
+                
+                // Redirect to student dashboard
+                redirectToStudentDashboard(studentId, studentName);
+                
             } else {
                 showAlert("Error", "Invalid student ID or password");
             }
         } catch (Exception e) {
             showAlert("Error", "Database error: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void redirectToStudentDashboard(String studentId, String studentName) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/student-dashboard.fxml"));
+            Parent root = loader.load();
+
+            // Pass student information to dashboard controller
+            StudentDashboardController controller = loader.getController();
+            controller.initializeStudent(studentId, studentName);
+
+            Stage stage = (Stage) studentIdField.getScene().getWindow();
+            stage.setScene(new Scene(root, 900, 700));
+            stage.setTitle("Student Dashboard - Digital Clearance");
+
+        } catch (Exception e) {
+            showAlert("Error", "Error loading dashboard: " + e.getMessage());
             e.printStackTrace();
         }
     }
