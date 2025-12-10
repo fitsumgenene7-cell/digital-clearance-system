@@ -1,0 +1,27 @@
+╔════════════════════════════════════════════════════════════╗
+║                 OFFICIAL CLEARANCE CERTIFICATE             ║
+║                   DIGITAL CLEARANCE SYSTEM                 ║
+╚════════════════════════════════════════════════════════════╝
+
+CERTIFICATE NO: CLR-2213/16-2025
+ISSUE DATE: 2025-12-07
+VALID UNTIL: 2026-06-07
+
+STUDENT NAME: GENENE FITSUM KIROS
+STUDENT ID:   2213/16
+ISSUED ON:    2025-12-07T21:27:52.229931
+
+OFFICE STATUS:
+OFFICE                    STATUS          REASON                        
+--------------------------------------------------------------------
+Cafeteria                 APPROVED        Cleared by office             
+Dormitory                 APPROVED        Cleared by dormitory chief    
+Faculty                   APPROVED        Cleared by office             
+Library                   APPROVED        Cleared by office             
+Police Office             APPROVED        Cleared by office             
+Sport                     APPROVED        Cleared by office             
+Student Service           APPROVED        Cleared by office             
+
+OVERALL CLEARANCE STATUS: CLEARED ✅
+
+

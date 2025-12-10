@@ -42,6 +42,8 @@
                         style="-fx-background-color: #9b59b6; -fx-text-fill: white;"/>
                 <Button text="&#x1F5A8; Print Clearance" onAction="#handlePrintClearance"
                         style="-fx-background-color: #2ecc71; -fx-text-fill: white;"/>
+                <Button text="&#x1F4C4; Get Certificate" onAction="#handleGenerateClearanceCertificate"
+                        style="-fx-background-color: #9b59b6; -fx-text-fill: white;"/>
             </VBox>
         </VBox>
 

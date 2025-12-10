@@ -11,12 +11,15 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,13 +38,16 @@ public class StudentDashboardController {
     private String studentId;
     private String studentName;
 
+    // -------------------------------------------------
+    // INITIALIZATION
+    // -------------------------------------------------
     public void initializeStudent(String studentId, String studentName) {
         this.studentId = studentId;
         this.studentName = studentName;
-        
+
         studentNameLabel.setText("Welcome, " + studentName + "!");
         studentIdLabel.setText("ID: " + studentId);
-        
+
         initializeTable();
         loadClearanceStatus();
         loadWarnings();
@@ -52,38 +58,36 @@ public class StudentDashboardController {
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         reasonColumn.setCellValueFactory(new PropertyValueFactory<>("reason"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("formattedDate"));
-        
-        // Set column widths
+
         officeColumn.setPrefWidth(150);
         statusColumn.setPrefWidth(100);
         reasonColumn.setPrefWidth(250);
         dateColumn.setPrefWidth(150);
     }
 
+    // -------------------------------------------------
+    // LOAD DATA
+    // -------------------------------------------------
     private void loadClearanceStatus() {
         try (Connection conn = DB.getConnection()) {
-            // Get all offices
+
             List<OfficeStatus> statusList = new ArrayList<>();
-            
+
             String officesSql = "SELECT office_name FROM offices";
             PreparedStatement officesStmt = conn.prepareStatement(officesSql);
             ResultSet officesRs = officesStmt.executeQuery();
-            
+
             while (officesRs.next()) {
                 String officeName = officesRs.getString("office_name");
                 OfficeStatus status = getOfficeStatus(conn, officeName);
                 statusList.add(status);
             }
-            
-            // Update table
+
             statusTable.getItems().setAll(statusList);
-            
-            // Calculate overall clearance status
             calculateOverallStatus(statusList);
-            
+
         } catch (SQLException e) {
             showAlert("Error", "Error loading clearance status: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -93,25 +97,23 @@ public class StudentDashboardController {
         pstmt.setString(1, studentId);
         pstmt.setString(2, officeName);
         ResultSet rs = pstmt.executeQuery();
-        
+
         if (rs.next()) {
             return new OfficeStatus(
-                officeName,
-                rs.getString("status"),
-                rs.getString("reason"),
-                rs.getString("created_at")
+                    officeName,
+                    rs.getString("status"),
+                    rs.getString("reason"),
+                    rs.getString("created_at")
             );
         } else {
-            // Default status for each office
             String defaultStatus = "PENDING";
             String defaultReason = "Not yet reviewed";
-            
-            // Special case for Dormitory
+
             if ("Dormitory".equals(officeName)) {
                 defaultStatus = "DENIED";
                 defaultReason = "Not cleared by dormitory (Default)";
             }
-            
+
             return new OfficeStatus(officeName, defaultStatus, defaultReason, "");
         }
     }
@@ -120,79 +122,83 @@ public class StudentDashboardController {
         boolean allApproved = true;
         boolean hasDenied = false;
         boolean hasWarning = false;
-        
+
         for (OfficeStatus status : statusList) {
-            if ("DENIED".equals(status.getStatus())) {
-                hasDenied = true;
-                break;
-            } else if ("WARNING".equals(status.getStatus())) {
-                hasWarning = true;
-            } else if (!"APPROVED".equals(status.getStatus())) {
-                allApproved = false;
+            switch (status.getStatus()) {
+                case "DENIED":
+                    hasDenied = true;
+                    break;
+                case "WARNING":
+                    hasWarning = true;
+                    break;
+                case "APPROVED":
+                    break;
+                default:
+                    allApproved = false;
             }
         }
-        
+
         String overallStatus;
-        String statusStyle;
-        
+        String style;
+
         if (hasDenied) {
             overallStatus = "CLEARANCE DENIED";
-            statusStyle = "-fx-text-fill: red; -fx-font-weight: bold;";
+            style = "-fx-text-fill: red; -fx-font-weight: bold;";
         } else if (hasWarning) {
             overallStatus = "HAS WARNINGS";
-            statusStyle = "-fx-text-fill: orange; -fx-font-weight: bold;";
+            style = "-fx-text-fill: orange; -fx-font-weight: bold;";
         } else if (allApproved) {
             overallStatus = "CLEARED";
-            statusStyle = "-fx-text-fill: green; -fx-font-weight: bold;";
+            style = "-fx-text-fill: green; -fx-font-weight: bold;";
         } else {
             overallStatus = "IN PROGRESS";
-            statusStyle = "-fx-text-fill: blue; -fx-font-weight: bold;";
+            style = "-fx-text-fill: blue; -fx-font-weight: bold;";
         }
-        
+
         clearanceStatusLabel.setText(overallStatus);
-        clearanceStatusLabel.setStyle(statusStyle);
+        clearanceStatusLabel.setStyle(style);
     }
 
     private void loadWarnings() {
         warningsBox.getChildren().clear();
-        
+
         try (Connection conn = DB.getConnection()) {
             String sql = "SELECT office_name, reason, created_at FROM penalties " +
-                        "WHERE student_id = ? AND status = 'WARNING' " +
-                        "ORDER BY created_at DESC";
-            
+                    "WHERE student_id = ? AND status = 'WARNING' ORDER BY created_at DESC";
+
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, studentId);
             ResultSet rs = pstmt.executeQuery();
-            
-            int warningCount = 0;
+
+            int count = 0;
+
             while (rs.next()) {
-                warningCount++;
-                String officeName = rs.getString("office_name");
-                String reason = rs.getString("reason");
-                String date = rs.getString("created_at");
-                
+                count++;
                 Label warningLabel = new Label(
-                    "⚠️ " + officeName + ": " + reason + " (" + date + ")"
+                        "⚠️ " + rs.getString("office_name") + ": " +
+                                rs.getString("reason") + " (" + rs.getString("created_at") + ")"
                 );
                 warningLabel.setWrapText(true);
                 warningLabel.setStyle("-fx-text-fill: orange; -fx-padding: 5px;");
                 warningsBox.getChildren().add(warningLabel);
             }
-            
-            if (warningCount == 0) {
-                Label noWarningsLabel = new Label("No warnings issued.");
-                noWarningsLabel.setStyle("-fx-text-fill: green; -fx-padding: 5px;");
-                warningsBox.getChildren().add(noWarningsLabel);
+
+            if (count == 0) {
+                Label noWarnings = new Label("No warnings issued.");
+                noWarnings.setStyle("-fx-text-fill: green; -fx-padding: 5px;");
+                warningsBox.getChildren().add(noWarnings);
             }
-            
+
         } catch (SQLException e) {
-            Label errorLabel = new Label("Error loading warnings: " + e.getMessage());
-            errorLabel.setStyle("-fx-text-fill: red; -fx-padding: 5px;");
-            warningsBox.getChildren().add(errorLabel);
+            Label error = new Label("Error loading warnings: " + e.getMessage());
+            error.setStyle("-fx-text-fill: red;");
+            warningsBox.getChildren().add(error);
         }
     }
 
+    // -------------------------------------------------
+    // BUTTON HANDLERS
+    // -------------------------------------------------
     @FXML
     private void handleRefresh() {
         loadClearanceStatus();
@@ -205,41 +211,35 @@ public class StudentDashboardController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/student-profile.fxml"));
             Parent root = loader.load();
-            
+
             StudentProfileController controller = loader.getController();
             controller.initializeProfile(studentId, studentName);
-            
+
             Stage stage = (Stage) studentNameLabel.getScene().getWindow();
             stage.setScene(new Scene(root, 600, 500));
             stage.setTitle("Student Profile - Digital Clearance");
-            
+
         } catch (Exception e) {
             showAlert("Error", "Error loading profile: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
     @FXML
     private void handlePrintClearance() {
-        // Generate clearance summary
         StringBuilder summary = new StringBuilder();
+
         summary.append("=== CLEARANCE SUMMARY ===\n");
         summary.append("Student: ").append(studentName).append("\n");
-        summary.append("ID: ").append(studentId).append("\n");
-        summary.append("Date: ").append(LocalDateTime.now().format(
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))).append("\n\n");
+        summary.append("ID: ").append(studentId).append("\n\n");
+
         summary.append("OFFICE STATUS:\n");
-        
         for (OfficeStatus status : statusTable.getItems()) {
-            summary.append(String.format("%-20s: %-10s - %s\n", 
-                status.getOfficeName(), 
-                status.getStatus(), 
-                status.getReason()));
+            summary.append(String.format("%-20s: %-10s - %s\n",
+                    status.getOfficeName(), status.getStatus(), status.getReason()));
         }
-        
+
         summary.append("\nOVERALL STATUS: ").append(clearanceStatusLabel.getText());
-        
-        // Show in alert (in real app, this could print or save to file)
+
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Clearance Summary");
         alert.setHeaderText("Your Clearance Status");
@@ -259,6 +259,90 @@ public class StudentDashboardController {
         }
     }
 
+    // -------------------------------------------------
+    // CERTIFICATE GENERATION
+    // -------------------------------------------------
+    // StudentDashboardController.java
+
+// ... (Around line 265)
+
+    @FXML
+    private void handleGenerateClearanceCertificate() {
+        if (!canGenerateCertificate()) {
+            showAlert("Cannot Generate Certificate",
+                    "You cannot generate a clearance certificate yet.\n" +
+                            "All offices must be APPROVED. No warnings or denials.");
+            return;
+        }
+
+        try {
+            String certificateContent = generateCertificateContent();
+
+            // --- MODIFICATION START ---
+            // 1. Create a safe version of studentId by replacing '/' with '-'
+            //    to avoid "No such file or directory" error (2213/16 is invalid)
+            String safeStudentId = studentId.replace("/", "-");
+
+            // 2. Use the safeStudentId to construct the file name
+            String fileName = "Clearance_Certificate_" + safeStudentId + "_" +
+                    LocalDate.now().toString().replace("-", "") + ".txt";
+            // --- MODIFICATION END ---
+
+            try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
+                writer.println(certificateContent);
+            }
+
+            showAlert("Clearance Certificate Generated",
+                    "Certificate saved as: " + fileName);
+
+        } catch (Exception e) {
+            showAlert("Error", "Failed to generate certificate: " + e.getMessage());
+        }
+    }
+
+    private boolean canGenerateCertificate() {
+        for (OfficeStatus status : statusTable.getItems()) {
+            if (!"APPROVED".equals(status.getStatus())) {
+                return false;
+            }
+        }
+        return clearanceStatusLabel.getText().equals("CLEARED");
+    }
+
+    private String generateCertificateContent() {
+        StringBuilder cert = new StringBuilder();
+
+        cert.append("╔════════════════════════════════════════════════════════════╗\n");
+        cert.append("║                 OFFICIAL CLEARANCE CERTIFICATE             ║\n");
+        cert.append("║                   DIGITAL CLEARANCE SYSTEM                 ║\n");
+        cert.append("╚════════════════════════════════════════════════════════════╝\n\n");
+
+        cert.append("CERTIFICATE NO: CLR-").append(studentId).append("-").append(LocalDate.now().getYear()).append("\n");
+        cert.append("ISSUE DATE: ").append(LocalDate.now()).append("\n");
+        cert.append("VALID UNTIL: ").append(LocalDate.now().plusMonths(6)).append("\n\n");
+
+        cert.append("STUDENT NAME: ").append(studentName).append("\n");
+        cert.append("STUDENT ID:   ").append(studentId).append("\n");
+        cert.append("ISSUED ON:    ").append(LocalDateTime.now()).append("\n\n");
+
+        cert.append("OFFICE STATUS:\n");
+        cert.append(String.format("%-25s %-15s %-30s\n", "OFFICE", "STATUS", "REASON"));
+        cert.append("--------------------------------------------------------------------\n");
+
+        for (OfficeStatus status : statusTable.getItems()) {
+            cert.append(String.format("%-25s %-15s %-30s\n",
+                    status.getOfficeName(), status.getStatus(), status.getReason()));
+        }
+
+        cert.append("\nOVERALL CLEARANCE STATUS: CLEARED ✅\n\n");
+
+
+        return cert.toString();
+    }
+
+    // -------------------------------------------------
+    // UTILITY
+    // -------------------------------------------------
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -267,7 +351,9 @@ public class StudentDashboardController {
         alert.showAndWait();
     }
 
-    // Model class for table data
+    // -------------------------------------------------
+    // MODEL CLASS
+    // -------------------------------------------------
     public static class OfficeStatus {
         private String officeName;
         private String status;
@@ -288,8 +374,7 @@ public class StudentDashboardController {
                 return "N/A";
             }
             try {
-                // Format date string for display
-                return dateStr.replace("T", " ").substring(0, Math.min(16, dateStr.length()));
+                return dateStr.replace("T", " ").substring(0, 16);
             } catch (Exception e) {
                 return dateStr;
             }
