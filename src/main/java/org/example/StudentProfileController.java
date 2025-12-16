@@ -8,6 +8,12 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;       // For FXMLLoader
+import javafx.scene.Parent;         // For Parent
+import javafx.scene.Scene;          // For Scene
+import javafx.stage.Stage;          // For Stage
+
 
 public class StudentProfileController {
 
@@ -109,9 +115,27 @@ public class StudentProfileController {
 
     @FXML
     private void handleBack() {
-        Stage stage = (Stage) titleLabel.getScene().getWindow();
-        stage.close();
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/student-dashboard.fxml")
+            );
+            Parent root = loader.load();
+
+            // Pass student data back
+            StudentDashboardController controller = loader.getController();
+            controller.initializeStudent(studentId,
+                    firstNameField.getText() + " " + lastNameField.getText());
+
+            Stage stage = (Stage) titleLabel.getScene().getWindow();
+            stage.setScene(new Scene(root, 900, 650));
+            stage.setTitle("Student Dashboard - Digital Clearance");
+
+        } catch (Exception e) {
+            showAlert("Error", "Failed to go back: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
+
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

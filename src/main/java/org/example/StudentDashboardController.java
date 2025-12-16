@@ -8,6 +8,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableCell;
+
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -53,6 +55,45 @@ public class StudentDashboardController {
         loadWarnings();
     }
 
+    private void colorStatusColumn() {
+        statusColumn.setCellFactory(column -> new TableCell<OfficeStatus, String>() {
+            @Override
+            protected void updateItem(String status, boolean empty) {
+                super.updateItem(status, empty);
+
+                if (empty || status == null) {
+                    setText(null);
+                    setStyle("");
+                    return;
+                }
+
+                setText(status);
+
+                switch (status) {
+                    case "APPROVED":
+                        setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                        break;
+
+                    case "WARNING":
+                        setStyle("-fx-text-fill: orange; -fx-font-weight: bold;");
+                        break;
+
+                    case "DENIED":
+                        setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+                        break;
+
+                    case "PENDING":
+                        setStyle("-fx-text-fill: blue; -fx-font-weight: bold;");
+                        break;
+
+                    default:
+                        setStyle("-fx-text-fill: black;");
+                }
+            }
+        });
+    }
+
+
     private void initializeTable() {
         officeColumn.setCellValueFactory(new PropertyValueFactory<>("officeName"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
@@ -63,6 +104,8 @@ public class StudentDashboardController {
         statusColumn.setPrefWidth(100);
         reasonColumn.setPrefWidth(250);
         dateColumn.setPrefWidth(150);
+
+        colorStatusColumn();
     }
 
     // -------------------------------------------------
