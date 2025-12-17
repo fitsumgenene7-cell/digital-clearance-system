@@ -36,7 +36,6 @@ public class OfficeLoginController {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                // Login successful - redirect to office dashboard
                 redirectToOfficeDashboard(officeName);
             } else {
                 showAlert("Error", "Invalid office name or password");
@@ -52,12 +51,11 @@ public class OfficeLoginController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/office-dashboard.fxml"));
             Parent root = loader.load();
 
-            // Pass office information to dashboard controller
             OfficeDashboardController controller = loader.getController();
             controller.initializeOffice(officeName);
 
             Stage stage = (Stage) officeNameField.getScene().getWindow();
-            stage.setScene(new Scene(root, 600, 500));
+            stage.setScene(new Scene(root, 1000, 700));  // Updated size
             stage.setTitle(officeName + " Dashboard - Digital Clearance");
 
         } catch (Exception e) {
@@ -71,8 +69,20 @@ public class OfficeLoginController {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/student-login.fxml"));
             Stage stage = (Stage) officeNameField.getScene().getWindow();
-            stage.setScene(new Scene(root, 400, 400));
+            stage.setScene(new Scene(root, 800, 600));  // Updated: 800x600
             stage.setTitle("Student Login - Digital Clearance");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void goBackToHome() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/hero-page.fxml"));
+            Stage stage = (Stage) officeNameField.getScene().getWindow();
+            stage.setScene(new Scene(root, 900, 600));  // Updated: 900x600
+            stage.setTitle("Digital Clearance System");
         } catch (Exception e) {
             e.printStackTrace();
         }

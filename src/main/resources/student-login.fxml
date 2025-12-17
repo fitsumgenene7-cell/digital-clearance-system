@@ -2,38 +2,142 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.1"
-      xmlns:fx="http://javafx.com/fxml/1"
+<VBox alignment="CENTER" spacing="0"
+      style="-fx-background-color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"
+      xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
       fx:controller="org.example.StudentLoginController"
-      style="-fx-padding: 30; -fx-background-color: #f5f5f5;">
+      prefHeight="600" prefWidth="800">
 
-    <Label text="Student Login">
-        <font>
-            <Font name="System Bold" size="24.0" />
-        </font>
-    </Label>
+    <!-- Back to Home Button -->
+    <HBox alignment="TOP_LEFT" style="-fx-padding: 20;">
+        <Button text="← Back to Home" onAction="#goBackToHome"
+                style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white;
+                       -fx-background-radius: 20; -fx-padding: 8 20; -fx-border-width: 0;
+                       -fx-cursor: hand; -fx-font-size: 14px;">
+            <HBox.margin>
+                <Insets top="10" left="10"/>
+            </HBox.margin>
+        </Button>
+    </HBox>
 
-    <VBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-background-color: lightblue; -fx-background-radius: 10; -fx-padding: 20;">
-        <Label text="Student ID" style="-fx-font-weight: bold;"/>
-        <TextField fx:id="studentIdField" promptText="Enter your student ID" prefWidth="250"/>
+    <!-- Main Content Container -->
+    <HBox alignment="CENTER" spacing="0" prefWidth="700" prefHeight="500">
 
-        <Label text="Password" style="-fx-font-weight: bold;"/>
-        <PasswordField fx:id="passwordField" promptText="Enter your password" prefWidth="250"/>
-
-        <HBox alignment="CENTER">
-            <VBox spacing="5.0" alignment="CENTER"
-                  style="-fx-padding:5 0 0 0">
-            <Button text="Login as Student" onAction="#handleStudentLogin" prefWidth="250"
-                style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10;"/>
-
-        <Label text="Not a student?" style="-fx-text-fill: #7f8c8d; -fx-padding: 0 0 0 0;"/>
-        <Button text="Go to Office Login" onAction="#switchToOfficeLogin" prefWidth="250"
-                style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-padding: 8;"/>
+        <!-- Left Side - Graphic/Info -->
+        <VBox alignment="CENTER" spacing="20" prefWidth="350"
+              style="-fx-background-color: rgba(255,255,255,0.9); -fx-background-radius: 20 0 0 20;">
+            <VBox alignment="CENTER" spacing="15">
+                <Label text="👨‍🎓" style="-fx-font-size: 60px;"/>
+                <Label text="Student Portal"
+                       style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                <Label text="Track your clearance status, view warnings, and manage your academic profile"
+                       style="-fx-text-fill: #7f8c8d; -fx-text-alignment: center; -fx-wrap-text: true; -fx-padding: 0 30;"/>
             </VBox>
-        </HBox>
+
+            <!-- Info Points -->
+            <VBox spacing="15" style="-fx-padding: 30 40;">
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="✓" style="-fx-text-fill: #27ae60; -fx-font-weight: bold;"/>
+                    <Label text="Real-time clearance tracking" style="-fx-text-fill: #555;"/>
+                </HBox>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="✓" style="-fx-text-fill: #27ae60; -fx-font-weight: bold;"/>
+                    <Label text="Instant certificate generation" style="-fx-text-fill: #555;"/>
+                </HBox>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="✓" style="-fx-text-fill: #27ae60; -fx-font-weight: bold;"/>
+                    <Label text="Department status updates" style="-fx-text-fill: #555;"/>
+                </HBox>
+            </VBox>
+        </VBox>
+
+        <!-- Right Side - Login Form -->
+        <VBox alignment="CENTER" spacing="25" prefWidth="350"
+              style="-fx-background-color: white; -fx-background-radius: 0 20 20 0;
+                     -fx-padding: 40 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 20, 0, 0, 5);">
+
+            <!-- Form Header -->
+            <VBox alignment="CENTER" spacing="10">
+                <Label text="Welcome Back"
+                       style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                <Label text="Sign in to continue to your dashboard"
+                       style="-fx-text-fill: #7f8c8d; -fx-font-size: 14px;"/>
+            </VBox>
+
+            <!-- Login Form -->
+            <VBox spacing="20" style="-fx-padding: 10 0;" prefWidth="280">
+
+                <!-- Student ID Field -->
+                <VBox spacing="8">
+                    <Label text="Student ID" style="-fx-font-weight: 600; -fx-text-fill: #495057;"/>
+                    <TextField fx:id="studentIdField"
+                               promptText="e.g., 1459/16"
+                               style="-fx-background-color: #f8f9fa; -fx-background-radius: 10;
+                                      -fx-border-color: #e9ecef; -fx-border-radius: 10; -fx-border-width: 1.5;
+                                      -fx-padding: 12 15; -fx-font-size: 14px; -fx-pref-height: 45;"/>
+                </VBox>
+
+                <!-- Password Field -->
+                <VBox spacing="8">
+                    <Label text="Password" style="-fx-font-weight: 600; -fx-text-fill: #495057;"/>
+                    <PasswordField fx:id="passwordField"
+                                   promptText="Enter your password"
+                                   style="-fx-background-color: #f8f9fa; -fx-background-radius: 10;
+                                          -fx-border-color: #e9ecef; -fx-border-radius: 10; -fx-border-width: 1.5;
+                                          -fx-padding: 12 15; -fx-font-size: 14px; -fx-pref-height: 45;"/>
+                </VBox>
+
+                <!-- Remember & Forgot -->
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <CheckBox text="Remember me"
+                              style="-fx-text-fill: #6c757d; -fx-font-size: 13px;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Hyperlink text="Forgot Password?"
+                               style="-fx-text-fill: #3498db; -fx-border-color: transparent; -fx-font-size: 13px;"/>
+                </HBox>
+
+                <!-- Login Button -->
+                <!-- Login Button - Centered -->
+                <HBox alignment="CENTER">
+                    <Button text="Sign In" onAction="#handleStudentLogin"
+                            style="-fx-background-color: linear-gradient(to right, #3498db, #2ecc71);
+                   -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px;
+                   -fx-background-radius: 10; -fx-padding: 14; -fx-cursor: hand;
+                   -fx-effect: dropshadow(gaussian, rgba(52, 152, 219, 0.3), 8, 0, 0, 2);"/>
+                </HBox>
+            </VBox>
+
+            <!-- Divider -->
+            <HBox alignment="CENTER" spacing="10" style="-fx-padding: 10 0;">
+                <Separator prefWidth="100" style="-fx-background-color: #dee2e6;"/>
+                <Label text="or" style="-fx-text-fill: #adb5bd; -fx-font-size: 13px;"/>
+                <Separator prefWidth="100" style="-fx-background-color: #dee2e6;"/>
+            </HBox>
+
+            <!-- Switch to Office Login -->
+            <VBox alignment="CENTER" spacing="8">
+                <Label text="Not a student?" style="-fx-text-fill: #6c757d; -fx-font-size: 14px;"/>
+                <Button text="Login as Office Staff" onAction="#switchToOfficeLogin"
+                        style="-fx-background-color: transparent; -fx-text-fill: #e74c3c;
+                               -fx-border-color: #e74c3c; -fx-border-radius: 10; -fx-border-width: 1.5;
+                               -fx-padding: 10 20; -fx-font-weight: 500; -fx-cursor: hand;"/>
+            </VBox>
+
+            <!-- Footer Note -->
+            <Label text="Having trouble? Contact IT support: clearance-support@bdu.edu.et"
+                   style="-fx-text-fill: #95a5a6; -fx-font-size: 12px; -fx-padding: 20 0 0 0;"/>
+        </VBox>
+    </HBox>
+
+    <!-- Bottom Footer -->
+    <VBox alignment="CENTER" spacing="5" style="-fx-padding: 20;">
+        <Label text="Bahir Dar Institute of Technology - Digital Clearance System"
+               style="-fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 13px;"/>
+        <Label text="© 2024 All rights reserved"
+               style="-fx-text-fill: rgba(255,255,255,0.6); -fx-font-size: 12px;"/>
     </VBox>
 </VBox>

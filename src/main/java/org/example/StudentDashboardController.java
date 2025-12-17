@@ -149,7 +149,7 @@ public class StudentDashboardController {
                     rs.getString("created_at")
             );
         } else {
-            String defaultStatus = "PENDING";
+            String defaultStatus = "APPROVED";
             String defaultReason = "Not yet reviewed";
 
             if ("Dormitory".equals(officeName)) {

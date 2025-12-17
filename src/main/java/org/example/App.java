@@ -14,11 +14,11 @@ public class App extends Application {
         SeedData.seedStudents();
         SeedData.seedOffices();
 
-        // Start with student login
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/student-login.fxml"));
-        Scene scene = new Scene(loader.load(), 400, 400);
+        // Start with hero page
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/hero-page.fxml"));
+        Scene scene = new Scene(loader.load(), 800, 600);
 
-        stage.setTitle("Digital Clearance - Student Login");
+        stage.setTitle("Digital Clearance System");
         stage.setScene(scene);
         stage.show();
     }

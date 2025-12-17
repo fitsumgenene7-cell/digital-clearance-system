@@ -37,10 +37,7 @@ public class StudentLoginController {
 
             if (rs.next()) {
                 String studentName = rs.getString("first_name") + " " + rs.getString("last_name");
-                
-                // Redirect to student dashboard
                 redirectToStudentDashboard(studentId, studentName);
-                
             } else {
                 showAlert("Error", "Invalid student ID or password");
             }
@@ -55,12 +52,11 @@ public class StudentLoginController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/student-dashboard.fxml"));
             Parent root = loader.load();
 
-            // Pass student information to dashboard controller
             StudentDashboardController controller = loader.getController();
             controller.initializeStudent(studentId, studentName);
 
             Stage stage = (Stage) studentIdField.getScene().getWindow();
-            stage.setScene(new Scene(root, 900, 700));
+            stage.setScene(new Scene(root, 1100, 800));  // Updated size
             stage.setTitle("Student Dashboard - Digital Clearance");
 
         } catch (Exception e) {
@@ -74,8 +70,20 @@ public class StudentLoginController {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/office-login.fxml"));
             Stage stage = (Stage) studentIdField.getScene().getWindow();
-            stage.setScene(new Scene(root, 400, 400));
+            stage.setScene(new Scene(root, 800, 600));  // Updated: 800x600
             stage.setTitle("Office Login - Digital Clearance");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void goBackToHome() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/hero-page.fxml"));
+            Stage stage = (Stage) studentIdField.getScene().getWindow();
+            stage.setScene(new Scene(root, 900, 600));  // Updated: 900x600
+            stage.setTitle("Digital Clearance System");
         } catch (Exception e) {
             e.printStackTrace();
         }
