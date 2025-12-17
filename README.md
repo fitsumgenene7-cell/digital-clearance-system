@@ -8,9 +8,11 @@ https://img.shields.io/badge/License-MIT-green
 https://img.shields.io/badge/Platform-Windows%2520%257C%2520macOS%2520%257C%2520Linux-lightgrey
 
 ✨ Overview
+
 The Digital Clearance System is a comprehensive desktop application designed to streamline the university clearance process for Bahir Dar Institute of Technology. The system allows students to track their clearance status across various departments while enabling office administrators to manage approvals, warnings, and denials efficiently.
 
 🎯 Key Features
+
 👨‍🎓 Student Portal: Real-time clearance tracking, certificate generation, and status monitoring
 
 🏢 Office Dashboard: Department-specific clearance management with search capabilities
